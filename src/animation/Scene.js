@@ -68,6 +68,10 @@ export default class Scene extends React.Component {
         let removeUnits = [];
 
         this.state.units.forEach(item => {
+            let removeActions = [];
+
+            console.log(item.actions.length);
+
             item.actions.forEach(action => {
                 if (action.type === ActionType.MOVE_X || action.type === ActionType.MOVE_Y) {
                     const interval = action.state.end - action.state.start;
@@ -93,8 +97,31 @@ export default class Scene extends React.Component {
                     if (action.state.start < count) {
                         removeUnits.push(item);
                     }
+                } else if (action.type === ActionType.FADE_IN || action.type === ActionType.FADE_OUT) {
+                    const interval = action.state.end - action.state.start;
+                    if (action.state.start <= count && action.state.end > count) {
+                        if (action.type === ActionType.FADE_IN) {
+                            if (action.state.start === count)
+                                item.setOpacity(0);
+                            item.addOpacity(1 / interval / this.getFPS());
+                        } else {
+                            if (action.state.start === count)
+                                item.setOpacity(1);
+                            item.addOpacity(-(1 / interval / this.getFPS()));
+                        }
+                    }
                 }
-            })
+
+                //사용이 끝난 액션 삭제
+                if (action.state.end && action.state.end < count
+                    && !action.state.repeat) {
+                    removeActions.push(action);
+                }
+            });
+
+            if (removeActions.length > 0) {
+                item.removeAction(removeActions);
+            }
         });
 
         if (removeUnits.length > 0) {

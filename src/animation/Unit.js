@@ -14,6 +14,7 @@ export default class Unit {
             y: 0,
             w: 0,
             h: 0,
+            opacity: 1,
             speed: 1
         }, props);
 
@@ -38,7 +39,8 @@ export default class Unit {
             this.component = this.props.src.map(file => <image key={this.key}
                                                                xlinkHref={file} x={this.x} y={this.y}
                                                                width={this.props.w}
-                                                               height={this.props.h}/>);
+                                                               height={this.props.h}
+                                                               opacity={this.props.opacity}/>);
         }
     };
 
@@ -52,6 +54,22 @@ export default class Unit {
         this.render();
     };
 
+    setOpacity = (opacity) => {
+        this.props.opacity = opacity;
+    };
+
+    addOpacity = (increase) => {
+        this.props.opacity += increase;
+
+        if (this.props.opacity < 0) {
+            this.props.opacity = 0;
+        } else if (this.props.opacity > 1) {
+            this.props.opacity = 1;
+        }
+
+        this.render();
+    };
+
     reset = () => {
         this.x = this.props.x;
         this.y = this.props.y;
@@ -62,4 +80,8 @@ export default class Unit {
     };
 
     getSpeed = () => this.props.speed;
+
+    removeAction = (actions) => {
+        this.actions = this.actions.filter(item => actions.findIndex(e => e.key === item.key) === -1);
+    };
 }

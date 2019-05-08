@@ -8,10 +8,20 @@ import Man2 from './res/man_01.png';
 
 export default class App extends React.Component {
     update = (scene, sec) => {
-        if (sec === 0.5) {
+        if (sec === 1) {
             const size = scene.getSize();
-            const unit = new Unit({type: UnitType.IMG, src: [Man1, Man2], x: size.w / 2, y: size.h * 0.8, w: 49, h: 71, speed:0.5});
+            const unit = new Unit({
+                type: UnitType.IMG,
+                src: [Man1, Man2],
+                x: size.w / 2,
+                y: size.h * 0.8,
+                w: 49,
+                h: 71,
+                speed: 0.5
+            });
             unit.addAction(new Action(ActionType.MOVE_Y, {start: 1, end: 30, y: -(size.h * 0.8)}));
+            unit.addAction(new Action(ActionType.FADE_IN, {start: 1, end: 2}));
+            unit.addAction(new Action(ActionType.FADE_OUT, {start: 29, end: 30}));
             unit.addAction(new Action(ActionType.REMOVE, {start: 30}));
             scene.addUnit(unit);
         }
